@@ -1,0 +1,40 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: log_viewer.app
+    expose:
+      - 9999
+    command:
+      - "-port=9999"
+      - "-flag=ctf4b{h1dd1ng_1n_cmdl1n3_m4y_b3_r34d4bl3}"
+    environment:
+      TZ: "Asia/Tokyo"
+    restart: always
+
+  nginx:
+    image: nginx:1.27.5-alpine
+    container_name: log_viewer.nginx
+    volumes:
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - type: bind
+        source: ./nginx/templates/
+        target: /etc/nginx/templates/
+    environment:
+      NGINX_PORT: 80
+      SERVER_NAME: localhost
+      APP_PORT: 9999
+    ports:
+      - "9999:80/tcp"
+    healthcheck:
+      test: ["CMD", "curl", "-sSf", "http://localhost/", ">", "/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
+    depends_on:
+      - app

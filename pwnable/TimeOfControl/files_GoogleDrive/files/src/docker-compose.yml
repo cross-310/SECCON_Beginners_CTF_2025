@@ -1,0 +1,7 @@
+services:
+  toc:
+    build: .
+    ports:
+      - "9004:5000"
+    restart: unless-stopped
+    privileged: true

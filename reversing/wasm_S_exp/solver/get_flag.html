@@ -1,0 +1,17 @@
+<html>
+	<body>
+		<script>
+fetch( "./get_flag.wasm" )
+	.then( response => response.arrayBuffer() )
+	.then( bytes => WebAssembly.instantiate( bytes ) )
+	.then( results => {
+		const { memory, get_flag } = results.instance.exports;
+		const offset = get_flag();
+		const chars = new Uint8Array( memory.buffer, offset, 25 );
+		const str = new TextDecoder().decode( chars )
+		console.log( str );
+	})
+	.catch(err => console.error(err));
+		</script>
+	</body>
+</html>

@@ -1,0 +1,85 @@
+# This file represents the base specification of your challenge. It is used by
+# other tools to install and deploy your challenge.
+
+
+############################
+# NOTE: ここから編集してください
+#
+# 編集する必要のある部分は TODO: の prefix がついています
+############################
+name: "login4b"      # TODO: 問題名を設定してください。
+author: "xryuseix"           # TODO: 自分の名前を設定してください。
+category: "web"          # TODO: カテゴリを設定してください。web/crypto/misc/pwnable/reversing/welcomeのどれかを追加してください。
+description: |
+    Are you admin?
+    [http://login4b.challenges.beginners.seccon.jp](http://login4b.challenges.beginners.seccon.jp)
+# attempts: 5                     # TODO: 提出回数制限がある場合は記載して下さい。
+
+flags:
+    - "ctf4b{y0u_c4n_byp455_my5q1_imp1ici7_7yp3_c457}"                   # TODO: Flagを追加してください
+    # - "ctf4b{we1c0me_t0_ctf}"  # 複数指定も可能
+
+# Tags are used to provide additional public tagging to a challenge
+# Accepts strings
+tags:                   
+    - author:xryuseix             # TODO: authorを設定してください。author:を含めて下さい。
+    - hard      # TODO: 難易度を追加してください。beginner/easy/medium/hard のいずれかを追加してください。
+
+# connection_info is used to provide a link, hostname, or instructions on how to connect to a challenge
+# connection_info: TODO:後でここに接続情報を追加
+
+# Provide paths to files from the same directory that this file is in
+# Accepts strings
+files:
+    - login4b.zip
+
+# Hints are used to give players a way to buy or have suggestions. They are not
+# required but can be nice.
+# Can be removed if unused
+# Accepts dictionaries or strings
+# hints:                              
+#     - {
+#         content: "問題文に書いてありますよね？",
+#         cost: 10
+#     }
+#     - このヒントのようにcostがない場合はコスト不要なヒントとして表示されます
+
+############################
+# NOTE: ここまで編集してください
+############################
+
+# The extra field provides additional fields for data during the install/sync commands/
+# Fields in extra can be used to supply additional information for other challenge types
+# For example the follow extra field is for dynamic challenges. To use these following
+# extra fields, set the type to "dynamic" and uncomment the "extra" section below
+value: 500
+type: dynamic
+extra:
+    initial: 500
+    decay: 225
+    minimum: 100
+
+# Settings used for Dockerfile deployment
+# If not used, remove or set to null
+# If you have a Dockerfile set to .
+# If you have an imaged hosted on Docker set to the image url (e.g. python/3.8:latest, registry.gitlab.com/python/3.8:latest)
+# Follow Docker best practices and assign a tag
+image: null
+
+# Specify a host to deploy the challenge onto.
+# The currently supported URI schemes are ssh:// and registry://
+# ssh is an ssh URI where the above image will be copied to and deployed (e.g. ssh://root@123.123.123.123)
+# registry is a Docker registry tag (e.g registry://registry.example.com/test/image)
+# host can also be specified during the deploy process: `ctf challenge deploy challenge --host=ssh://root@123.123.123.123`
+host: null
+
+# Optional settings
+
+# The state of the challenge.
+# If the field is omitted, the challenge is visible by default.
+# If provided, the field can take one of two values: hidden, visible.
+state: visible
+
+# Specifies what version of the challenge specification was used.
+# Subject to change until ctfcli v1.0.0
+version: "0.1"

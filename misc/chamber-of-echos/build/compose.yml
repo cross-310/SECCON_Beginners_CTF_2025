@@ -1,0 +1,15 @@
+name: chamber-of-echos
+
+services:
+  app:
+    build: .
+    container_name: chamber-of-echos.app
+    command: [ "eth0" ]
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      TZ: "Asia/Tokyo"
+      FLAG: "ctf4b{th1s_1s_c0v3rt_ch4nn3l_4tt4ck}"
+    restart: always

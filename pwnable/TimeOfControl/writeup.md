@@ -1,0 +1,4 @@
+seekにおいて、`is_offset_valid`を呼ぶ前に`msg_offset`に値をセットしてしまっているため、任意の値を`msg_offset`へ設定することが可能です。
+また、ロックが全く取られていないため、Race Conditionが発生します。特に、writeにおいて、`is_offset_valid`が呼ばれた後、`memcpy`が呼ばれる間にoffsetが書き換わった場合、`global_offset`とは関係ない場所への書き込みが行われる可能性があります。
+これで、カーネルで任意アドレスへ読み書きできるようになりました。今回はkaslrやkpti、smapなど防御機構が切れているため、簡単に権限昇格可能。
+modprobe_pathへ書き込みすることで権限昇格する方法が簡単。

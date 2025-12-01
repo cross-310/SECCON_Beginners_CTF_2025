@@ -1,0 +1,24 @@
+name: "mathmyth"
+author: "motimotipurinn"
+category: "crypto"
+description: "math is myth"
+
+flags:
+    - "ctf4b{LLM5_4r3_k1ll1n9_my_pr0bl3m}"
+
+tags:
+    - author:motimotipurinn
+    - hard
+
+files:
+    - mathmyth.zip
+
+value: 500
+type: dynamic
+extra:
+    initial: 500
+    decay: 225
+    minimum: 100
+
+state: visible
+version: "0.1"

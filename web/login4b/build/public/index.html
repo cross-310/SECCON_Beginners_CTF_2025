@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login4b</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .hidden { display: none; }
+        .error { color: red; margin: 10px 0; }
+        .success { color: green; margin: 10px 0; }
+        .flag { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; border-radius: 4px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔰 Login4b 🔰</h1>
+    
+    <div id="auth-section">
+        <div class="container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Username:</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <div class="container">
+            <h2>Register</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-username">Username:</label>
+                    <input type="text" id="register-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password:</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+
+        <div class="container">
+            <h2>Password Reset</h2>
+            <form id="reset-form">
+                <div class="form-group">
+                    <label for="reset-username">Username:</label>
+                    <input type="text" id="reset-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reset-token">Reset Token:</label>
+                    <input type="text" id="reset-token" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                <button type="submit">Reset Password</button>
+            </form>
+            <div class="form-group">
+                <label for="request-username">Username for Reset:</label>
+                <input type="text" id="request-username" required>
+            </div>
+            <button id="request-reset-btn" type="button">Request Reset Token</button>
+        </div>
+    </div>
+
+    <div id="user-section" class="hidden">
+        <div class="container">
+            <h2>Welcome, <span id="username"></span>!</h2>
+            <button id="get-flag-btn">Get Flag</button>
+            <button id="logout-btn">Logout</button>
+            <div id="flag-result"></div>
+        </div>
+    </div>
+
+    <div id="message"></div>
+
+    <script>
+        const messageDiv = document.getElementById('message');
+        const authSection = document.getElementById('auth-section');
+        const userSection = document.getElementById('user-section');
+        const usernameSpan = document.getElementById('username');
+
+        function showMessage(text, isError = false) {
+            messageDiv.innerHTML = `<div class="${isError ? 'error' : 'success'}">${text}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 10000);
+        }
+
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                if (data.authenticated) {
+                    authSection.classList.add('hidden');
+                    userSection.classList.remove('hidden');
+                    usernameSpan.textContent = data.username;
+                } else {
+                    authSection.classList.remove('hidden');
+                    userSection.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Status check failed:', error);
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage(data.message);
+                    checkStatus();
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Login failed', true);
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage(data.message);
+                    checkStatus();
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Registration failed', true);
+            }
+        });
+
+        document.getElementById('reset-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reset-username').value;
+            const token = document.getElementById('reset-token').value;
+            const newPassword = document.getElementById('new-password').value;
+
+            if (!username || !token || !newPassword) {
+                showMessage('Please fill in all fields', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, token, newPassword })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage(data.message);
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Reset failed', true);
+            }
+        });
+
+        document.getElementById('request-reset-btn').addEventListener('click', async () => {
+            try {
+                const username = document.getElementById('request-username').value;
+                if (!username) {
+                    showMessage('Please enter a username', true);
+                    return;
+                }
+
+                const response = await fetch('/api/reset-request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showMessage(data.message, false);
+                } else {
+                    showMessage(data.error, true);
+                }
+            } catch (error) {
+                showMessage('Request failed', true);
+            }
+        });
+
+        document.getElementById('get-flag-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/get_flag');
+                const data = await response.json();
+
+                const flagResult = document.getElementById('flag-result');
+                if (data.flag) {
+                    flagResult.innerHTML = `<div class="flag"><strong>Flag:</strong> ${data.flag}</div>`;
+                } else {
+                    flagResult.innerHTML = `<div class="success">${data.message}</div>`;
+                }
+            } catch (error) {
+                showMessage('Failed to get flag', true);
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/logout', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(data.message);
+                    checkStatus();
+                }
+            } catch (error) {
+                showMessage('Logout failed', true);
+            }
+        });
+
+        checkStatus();
+    </script>
+</body>
+</html>

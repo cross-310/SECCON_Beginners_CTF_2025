@@ -1,0 +1,13 @@
+upstream app {
+  server app:${APP_PORT};
+}
+
+server {
+  listen ${NGINX_PORT};
+  listen [::]:${NGINX_PORT};
+  server_name ${SERVER_NAME};
+
+  location / {
+    proxy_pass http://app/;
+  }
+}

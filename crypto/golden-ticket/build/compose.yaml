@@ -1,0 +1,8 @@
+services:
+  golden-ticket:
+    build: ./
+    environment:
+      - FLAG=ctf4b{u_wi11_b3_1nv173d_t0_7h3_ch0c0l4t3_f4c70ry_1337_t1m35}
+    ports:
+      - ${PORT:-9999}:9999
+    restart: always

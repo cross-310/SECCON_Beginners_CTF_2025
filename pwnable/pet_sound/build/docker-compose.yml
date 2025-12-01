@@ -1,0 +1,14 @@
+version: '3'
+services:
+  pet_sound:
+    build:
+      context: .
+    restart: always
+    working_dir: /home/pwn
+    container_name: pet_sound
+    ulimits:
+      nproc: 65535
+      core: 0
+    ports:
+      - "9090:9000"
+    entrypoint: /etc/init.sh

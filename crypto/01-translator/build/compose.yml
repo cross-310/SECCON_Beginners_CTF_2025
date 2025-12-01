@@ -1,0 +1,8 @@
+services:
+  01-translator:
+    build: ./
+    environment:
+      - FLAG=ctf4b{n0w_y0u'r3_4_b1n4r13n}
+    ports:
+      - ${PORT:-9999}:9999
+    restart: unless-stopped
