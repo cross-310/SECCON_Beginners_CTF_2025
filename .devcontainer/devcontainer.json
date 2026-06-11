@@ -1,0 +1,23 @@
+{
+  "name": "SECCON Beginners CTF 2025 Workshop Host",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": true,
+      "version": "latest"
+    }
+  },
+  // 2-core / 8GB の無料マシンで十分動きます。問題数が多い場合のみ上位マシンを選択してください。
+  "hostRequirements": {
+    "cpus": 2
+  },
+  // ここに書いた値はラベル付けのための例です。実際の問題に合わせて編集してください。
+  // ポートは up.sh 実行後に「Ports」パネルから手動で Public にします（WORKSHOP.md 参照）。
+  "portsAttributes": {
+    "3000": { "label": "web-login4b" },
+    "8080": { "label": "web-memo4b" }
+  },
+  // 初回作成時に ngrok と補助ツールを導入します。
+  "postCreateCommand": "bash workshop/setup.sh",
+  "remoteUser": "vscode"
+}
