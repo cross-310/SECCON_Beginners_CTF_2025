@@ -8,6 +8,6 @@ echo "==> コンテナを停止"
 for entry in "${CHALLENGES[@]}"; do
   IFS='|' read -r type name dir port <<< "$entry"
   [ -z "${dir:-}" ] && continue
-  [ -d "$dir" ] && ( cd "$dir" && PORT="$port" docker compose down ) || true
+  [ -d "$dir" ] && ( cd "$dir" && COMPOSE_PROJECT_NAME="$name" PORT="$port" docker compose down ) || true
 done
 echo "==> 完了。Codespace 自体も github.com/codespaces で停止/削除すること。"
