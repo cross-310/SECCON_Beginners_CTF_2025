@@ -25,7 +25,7 @@ for entry in "${CHALLENGES[@]}"; do
     continue
   fi
   # PORT を渡す（01-translator は ports: "${PORT:-9999}:9999" を読む。他は無視）
-  ( cd "$dir" && PORT="$port" docker compose up -d --build )
+  ( cd "$dir" && COMPOSE_PROJECT_NAME="$name" PORT="$port" docker compose up -d --build )
   if [ "$type" = "web" ]; then web_list+=("$name|$port"); else tcp_list+=("$name|$port"); fi
 done
 
